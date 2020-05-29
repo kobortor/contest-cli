@@ -22,6 +22,8 @@ def main():
         handle_submit(sys.argv[2:])
     elif first_arg == "help":
         handle_help(sys.argv[2:])
+    else:
+        print("Argument {} not understood".format(sys.argv[1]))
 
 if __name__ == "__main__":
     main()
