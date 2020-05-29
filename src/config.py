@@ -1,6 +1,6 @@
 import os
 from typing import *
-import dmoj_urls
+from utils import get_login_url, get_session, save_session
 from getpass import getpass
 import requests
 import pickle
@@ -8,8 +8,7 @@ from help import handle_help
 from urllib.parse import urlparse
 
 def _handle_login(args: List[str]):
-    login_session_filename = os.path.expanduser("~/.config/dmoj-cli/login.pkl")
-    if os.path.exists(login_session_filename):
+    if get_session() is not None:
         print("Warning: Existing login will be overriden. Continue? [y/n]")
         while True:
             choice = input().strip()
@@ -22,7 +21,7 @@ def _handle_login(args: List[str]):
 
     s = requests.session()
 
-    r1 = s.get(dmoj_urls.get_login_url())
+    r1 = s.get(get_login_url())
 
     if r1.status_code != 200:
         print("Cannot connect to dmoj.ca: error code [{}]".format(r.status_code))
@@ -48,6 +47,10 @@ def _handle_login(args: List[str]):
             r1.url, 
             data={"username": username, "password": password, "csrfmiddlewaretoken": r1.cookies["csrftoken"]},
             headers={'referer':r1.url})
+
+    if r2.status_code != 200:
+        print("Cannot connect to dmoj.ca: error code [{}]".format(r.status_code))
+        return
 
     if '<p class="error">Invalid username or password.</p>' in r2.text:
         print("Error: Login Failed")
@@ -75,8 +78,7 @@ def _handle_login(args: List[str]):
             return
 
     print("Login Successful!")
-    os.makedirs(os.path.dirname(login_session_filename), exist_ok=True)
-    pickle.dump(s, open(login_session_filename, "wb"))
+    save_session(s)
 
 def handle_config(args: List[str]):
     if not args:

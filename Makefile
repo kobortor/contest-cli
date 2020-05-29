@@ -1,4 +1,4 @@
-python_files = src/__main__.py src/help.py src/config.py src/submit.py src/make.py src/dmoj_urls.py
+python_files = src/__main__.py src/help.py src/config.py src/submit.py src/make.py src/utils.py
 app: $(python_files)
 	@tmp=$$(mktemp); \
 	zip -j "$$tmp.zip" $(python_files); \
