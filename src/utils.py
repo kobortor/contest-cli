@@ -1,5 +1,20 @@
 import os
+import json
 import pickle
+
+class Settings:
+    def __init__(self, dct):
+        if "sample_data_folder" in dct:
+            self.sample_data_folder = dct["sample_data_folder"]
+        else:
+            self.sample_data_folder = "data"
+
+def get_settings():
+    setting_filename = os.path.expanduser("~/.config/dmoj-cli/settings.json")
+    if os.path.exists(setting_filename):
+        return Settings(json.load(open(setting_filename, "r")))
+    else:
+        return Settings({})
 
 def get_login_url():
     return "https://dmoj.ca/accounts/login/"
