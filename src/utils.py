@@ -7,7 +7,8 @@ class Settings:
         if "sample_data_folder" in dct:
             self.sample_data_folder = dct["sample_data_folder"]
         else:
-            self.sample_data_folder = "data"
+            self.sample_data_folder = "data"  # relative to cwd
+
 
 def get_settings():
     setting_filename = os.path.expanduser("~/.config/dmoj-cli/settings.json")
@@ -33,3 +34,4 @@ def get_session():
 def save_session(s):
     os.makedirs(os.path.dirname(login_session_filename), exist_ok=True)
     pickle.dump(s, open(login_session_filename, "wb"))
+

@@ -8,4 +8,7 @@ dmoj: $(python_files)
 
 .PHONY: install
 install: dmoj
-	@cp dmoj /usr/local/bin/
+	@cp dmoj /usr/local/bin/; \
+	mkdir -p ~/.dmoj/defaults; \
+	cp defaults/* ~/.dmoj/defaults
+
