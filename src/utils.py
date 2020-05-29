@@ -9,6 +9,11 @@ class Settings:
         else:
             self.sample_data_folder = "data"  # relative to cwd
 
+        if "language" in dct:
+            self.language = dct["language"]
+        else:
+            self.language = "CPP17"
+
 
 def get_settings():
     setting_filename = os.path.expanduser("~/.config/dmoj-cli/settings.json")
@@ -23,6 +28,9 @@ def get_login_url():
 def get_problem_url(problem):
     return "https://dmoj.ca/problem/{}".format(problem)
 
+def get_problem_api_url(problem):
+    return "https://dmoj.ca/api/problem/info/{}".format(problem)
+
 def get_session():
     login_session_filename = os.path.expanduser("~/.config/dmoj-cli/login.pkl")
     if os.path.exists(login_session_filename):
@@ -31,7 +39,11 @@ def get_session():
     else:
         return None
 
+def delete_session():
+    login_session_filename = os.path.expanduser("~/.config/dmoj-cli/login.pkl")
+    os.remove(login_session_filename)
+
 def save_session(s):
+    login_session_filename = os.path.expanduser("~/.config/dmoj-cli/login.pkl")
     os.makedirs(os.path.dirname(login_session_filename), exist_ok=True)
     pickle.dump(s, open(login_session_filename, "wb"))
-

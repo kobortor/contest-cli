@@ -1,4 +1,6 @@
 python_files = src/__main__.py src/help.py src/config.py src/submit.py src/make.py src/utils.py
+default_files = defaults/patterns.json
+
 dmoj: $(python_files)
 	@tmp=$$(mktemp); \
 	zip -j "$$tmp.zip" $(python_files); \
@@ -10,5 +12,5 @@ dmoj: $(python_files)
 install: dmoj
 	@cp dmoj /usr/local/bin/; \
 	mkdir -p ~/.dmoj/defaults; \
-	cp defaults/* ~/.dmoj/defaults
+	cp $(default_files) ~/.dmoj/defaults
 

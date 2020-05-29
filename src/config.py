@@ -1,13 +1,17 @@
 import os
 from typing import *
-from utils import get_login_url, get_session, save_session
+from utils import get_login_url, get_session, delete_session, save_session
 from getpass import getpass
-import requests
+import cfscrape
 import pickle
 from help import handle_help
 from urllib.parse import urlparse
 
 def _handle_login(args: List[str]):
+    if args:
+        print("Please do not put arguments after `login`")
+        return
+
     if get_session() is not None:
         print("Warning: Existing login will be overriden. Continue? [y/n]")
         while True:
@@ -19,7 +23,7 @@ def _handle_login(args: List[str]):
             else:
                 print("Input not understood, try again")
 
-    s = requests.session()
+    s = cfscrape.create_scraper()
 
     r1 = s.get(get_login_url())
 
@@ -46,7 +50,7 @@ def _handle_login(args: List[str]):
     r2 = s.post(
             r1.url, 
             data={"username": username, "password": password, "csrfmiddlewaretoken": r1.cookies["csrftoken"]},
-            headers={'referer':r1.url})
+            headers={"referer":r1.url})
 
     if r2.status_code != 200:
         print("Cannot connect to dmoj.ca: error code [{}]".format(r.status_code))
@@ -69,7 +73,7 @@ def _handle_login(args: List[str]):
         r3 = s.post(
                 r2.url,
                 data={"totp_token": code_2fa, "csrfmiddlewaretoken": r2.cookies["csrftoken"]},
-                headers={'referer':r2.url})
+                headers={"referer":r2.url})
         if r3.status_code != 200:
             print("Error: Status Code {}".format(r3.status_code))
             return
@@ -78,11 +82,33 @@ def _handle_login(args: List[str]):
             return
 
     print("Login Successful!")
+    s.cookies["dmoj-cli-username"] = username
     save_session(s)
+
+def _handle_logout(args: List[str]):
+    if args:
+        print("Please do not put arguments after `login`")
+        return
+    
+    sess = get_session()
+    if sess is None:
+        print("No session found")
+        return
+
+    choice = input("Are you sure you want to delete user {}? [y/n]".format(sess.cookies.get("dmoj-cli-username", "[UNKNOWN USER]")))
+    if choice.strip().lower() == "y":
+        delete_session()
+    else:
+        print("Not deleting!")
 
 def handle_config(args: List[str]):
     if not args:
-        handle_help()
+        handle_help(args)
+        return
 
     if args[0] == "login":
         _handle_login(args[1:])
+    elif args[0] == "logout":
+        _handle_logout(args[1:])
+    else:
+        print("Unknown config `{}`".format(args[0]))

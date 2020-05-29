@@ -6,7 +6,6 @@ from help import handle_help
 from config import handle_config
 from make import handle_make
 from submit import handle_submit
-import requests
 
 def main():
     if len(sys.argv) == 1:
