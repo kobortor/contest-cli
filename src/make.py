@@ -1,5 +1,5 @@
 from typing import *
-from utils import get_session, get_problem_url, get_problem_api_url, get_settings
+from utils import get_session, get_problem_url, get_problem_api_url, get_settings, get_regex_matcher
 from bs4 import BeautifulSoup
 import pickle
 import json
@@ -69,3 +69,8 @@ def handle_make(args: List[str]):
             "languages": languages,
             "samples": list(k[:-3] for k in dct.keys() if k.endswith(".in") and k[:-3] + ".out" in dct)
             }))
+
+    regex_matcher = get_regex_matcher()
+    output_base_filename = regex_matcher(problem_id)
+
+    print("Get raw name {}".format(output_base_filename))

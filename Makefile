@@ -11,6 +11,6 @@ dmoj: $(python_files)
 .PHONY: install
 install: dmoj
 	@cp dmoj /usr/local/bin/; \
-	mkdir -p ~/.dmoj/defaults; \
-	cp $(default_files) ~/.dmoj/defaults
+	mkdir -p ~/.contest-cli/dmoj-defaults; \
+	cp $(default_files) ~/.contest-cli/dmoj-defaults/
 
