@@ -1,3 +1,4 @@
 dmoj
 data/*
 *.swp
+*/__pycache__/*
