@@ -10,19 +10,21 @@ def handle_make(args: List[str]):
         print("Expected exactly 1 argument after `make`")
         return
 
+    problem_id = args[0]
+
     sess = get_session()
     if sess is None:
         print("No session: please log in using `config login`")
         return
 
-    r = sess.get(get_problem_url(args[0]))
+    r = sess.get(get_problem_url(problem_id))
     if r.status_code != 200:
         print("Error: status code {}".format(r.status_code))
         return
 
     soup = BeautifulSoup(r.text, "html.parser")
 
-    r = sess.get(get_problem_api_url(args[0]))
+    r = sess.get(get_problem_api_url(problem_id))
 
     if r.status_code != 200:
         print("Error: status code {}".format(r.status_code))
