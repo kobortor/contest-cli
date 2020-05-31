@@ -1,16 +1,35 @@
 from typing import *
 from utils import get_session, get_problem_url, get_problem_api_url, get_settings, get_regex_matcher
 from bs4 import BeautifulSoup
+from pathlib import Path
 import pickle
 import json
 import os
 
 def handle_make(args: List[str]):
+    settings = get_settings()
+
+    cur_dir_name = os.path.basename(os.getcwd())
+
+    if settings.allowed_paths:
+        # Check if path is not allowed
+        allowed = False
+        basename = os.path.basename(os.getcwd())
+        for path in settings.allowed_paths:
+            if os.expanduser(path).beginswith(os.getcwd()) or path == basename:
+                allowed = True
+                break
+
+        if not allowed:
+            print("You don't seem to be in one of these directories: {}".format(settings.allowed_paths))
+            return
+
     if len(args) != 1:
         print("Expected exactly 1 argument after `make`")
         return
 
     problem_id = args[0]
+
 
     sess = get_session()
     if sess is None:
@@ -51,13 +70,11 @@ def handle_make(args: List[str]):
         elif child.name == "pre" and idx and ext:
             dct["{}.{}".format(idx, ext)] = child.find("code").text.strip()
 
-    settings = get_settings()
-
     problem_name = api_data["name"]
     languages = api_data["languages"]
 
-    if settings.language not in languages:
-        print("Your language ({}) is not supported. Please change to one from {} before submitting.".format(settings.language, languages))
+    if settings.language.name not in languages:
+        print("Your language ({}) is not supported. Please change to one from {} before submitting.".format(settings.language.name, languages))
 
     os.makedirs(settings.sample_data_folder, exist_ok=True)
     for (k, v) in dct.items():
@@ -72,5 +89,11 @@ def handle_make(args: List[str]):
 
     regex_matcher = get_regex_matcher()
     output_base_filename = regex_matcher(problem_id)
+    output_suffix_filename = output_base_filename + "." + settings.language.suffix
 
-    print("Get raw name {}".format(output_base_filename))
+    os.makedirs(os.path.dirname(output_base_filename), exist_ok=True)
+    
+    with open(settings.template_filename, "r") as fin, open(output_base_filename, "w") as fout:
+        for line in fin:
+            # TODO: replace things like ${username} and whatnot
+            fout.write(line)

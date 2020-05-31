@@ -3,18 +3,12 @@ import re
 import json
 import pickle
 
+
 class Settings:
     def __init__(self, dct):
-        if "sample_data_folder" in dct:
-            self.sample_data_folder = dct["sample_data_folder"]
-        else:
-            self.sample_data_folder = "data"  # relative to cwd
-
-        if "language" in dct:
-            self.language = dct["language"]
-        else:
-            self.language = "CPP17"
-
+        self.sample_data_folder = dct.get("sample_data_folder", "data")
+        self.language = dct.get("language", "CPP17")
+        self.allowed_paths = dct.get("allowed_paths", [])
 
 def get_settings():
     setting_filename = os.path.expanduser("~/.contest-cli/dmoj-defaults/settings.json")
@@ -22,6 +16,7 @@ def get_settings():
         return Settings(json.load(open(setting_filename, "r")))
     else:
         return Settings({})
+
 
 
 class RegExMatcher:
@@ -71,3 +66,5 @@ def save_session(s):
     login_session_filename = os.path.expanduser("~/.contest-cli/dmoj/login.pkl")
     os.makedirs(os.path.dirname(login_session_filename), exist_ok=True)
     pickle.dump(s, open(login_session_filename, "wb"))
+
+
