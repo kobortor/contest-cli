@@ -1,0 +1,5 @@
+{
+    "sample_data_folder": "data",
+    "language": "CPP17",
+    "allowed_paths": ["Competitive-Programming"]
+}
