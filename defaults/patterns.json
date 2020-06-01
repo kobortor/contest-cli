@@ -25,7 +25,7 @@
     },
     {
         "regexp": "^dp([a-zA-Z]|roblem)$",
-        "replacement": "dp/\\11"
+        "replacement": "dp/\\1"
     },
     {
         "regexp": "^oly(\\d+)(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)p(\\d+)$",
