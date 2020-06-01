@@ -1,9 +1,9 @@
 from typing import *
-from utils import get_settings
+from utils import Settings
 
 def handle_submit(args: List[str]):
     if len(args) == 0:
-        settings = get_settings()
+        settings = Settings.get_default()
     elif len(args) == 1:
         pass
     elif len(args) == 2:

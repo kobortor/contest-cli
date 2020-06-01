@@ -4,19 +4,36 @@ import json
 import pickle
 
 
+class Language:
+    def __init__(self, name, compile_fmt_str, run_fmt_str):
+        self.name = name
+        self.compile_fmt_str = compile_fmt_str
+        self.run_fmt_str = run_fmt_str
+
+    @staticmethod
+    def get_default_by_name(name):
+        languages_filename = os.path.expanduser("~/.contest-cli/dmoj-defaults/languages.json")
+        if os.path.exists(languages_filename):
+            data = json.load(open(languages_filename, "r"))
+            if name in data:
+                return Language(name, data[name]["compile_fmt_str"], data[name]["run_fmt_str"])
+
+        raise KeyError("Unknown language")
+
+
 class Settings:
     def __init__(self, dct):
         self.sample_data_folder = dct.get("sample_data_folder", "data")
-        self.language = dct.get("language", "CPP17")
+        self.language = Language.get_default_by_name(dct.get("language", "CPP17"))
         self.allowed_paths = dct.get("allowed_paths", [])
 
-def get_settings():
-    setting_filename = os.path.expanduser("~/.contest-cli/dmoj-defaults/settings.json")
-    if os.path.exists(setting_filename):
-        return Settings(json.load(open(setting_filename, "r")))
-    else:
-        return Settings({})
-
+    @staticmethod
+    def get_default():
+        setting_filename = os.path.expanduser("~/.contest-cli/dmoj-defaults/settings.json")
+        if os.path.exists(setting_filename):
+            return Settings(json.load(open(setting_filename, "r")))
+        else:
+            return Settings({})
 
 
 class RegExMatcher:
@@ -25,6 +42,7 @@ class RegExMatcher:
 
     def __call__(self, s):
         for (regexp, replacement) in self.lst:
+            print("Try {} -> {} against {}".format(regexp, replacement, s))
             tmp = re.subn(regexp, replacement, s)
             if tmp[1] != 0:
                 return tmp[0]

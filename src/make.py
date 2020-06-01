@@ -1,5 +1,5 @@
 from typing import *
-from utils import get_session, get_problem_url, get_problem_api_url, get_settings, get_regex_matcher
+from utils import get_session, get_problem_url, get_problem_api_url, Settings, get_regex_matcher
 from bs4 import BeautifulSoup
 from pathlib import Path
 import pickle
@@ -7,7 +7,7 @@ import json
 import os
 
 def handle_make(args: List[str]):
-    settings = get_settings()
+    settings = Settings.get_default()
 
     cur_dir_name = os.path.basename(os.getcwd())
 
@@ -16,7 +16,7 @@ def handle_make(args: List[str]):
         allowed = False
         basename = os.path.basename(os.getcwd())
         for path in settings.allowed_paths:
-            if os.expanduser(path).beginswith(os.getcwd()) or path == basename:
+            if os.path.expanduser(path).startswith(os.getcwd()) or path == basename:
                 allowed = True
                 break
 
