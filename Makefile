@@ -1,5 +1,5 @@
 python_files = src/__main__.py src/help.py src/config.py src/submit.py src/make.py src/utils.py
-default_files = defaults/patterns.json
+default_files = defaults/patterns.json defaults/settings.json defaults/languages.json
 
 dmoj: $(python_files)
 	@tmp=$$(mktemp); \
@@ -10,7 +10,8 @@ dmoj: $(python_files)
 
 .PHONY: install
 install: dmoj
-	@cp dmoj /usr/local/bin/; \
-	mkdir -p ~/.contest-cli/dmoj-defaults; \
-	cp $(default_files) ~/.contest-cli/dmoj-defaults/
+	@bash scripts/install.sh $(default_files)
 
+.PHONY: uninstall
+uninstall:
+	@bash scripts/uninstall.sh $(default_files)
