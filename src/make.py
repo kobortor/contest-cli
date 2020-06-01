@@ -7,7 +7,7 @@ import json
 import os
 
 def handle_make(args: List[str]):
-    settings = Settings.get_default()
+    settings = Settings.get_saved()
 
     cur_dir_name = os.path.basename(os.getcwd())
 
@@ -30,6 +30,9 @@ def handle_make(args: List[str]):
 
     problem_id = args[0]
 
+    if settings.template_filename is None or settings.language is None:
+        print("You don't seem to have a template. Please set one up using `dmoj config template`")
+        return
 
     sess = get_session()
     if sess is None:
@@ -91,9 +94,9 @@ def handle_make(args: List[str]):
     output_base_filename = regex_matcher(problem_id)
     output_suffix_filename = output_base_filename + "." + settings.language.suffix
 
-    os.makedirs(os.path.dirname(output_base_filename), exist_ok=True)
+    os.makedirs(os.path.dirname(output_suffix_filename), exist_ok=True)
     
-    with open(settings.template_filename, "r") as fin, open(output_base_filename, "w") as fout:
+    with open(settings.template_filename, "r") as fin, open(output_suffix_filename, "w") as fout:
         for line in fin:
             # TODO: replace things like ${username} and whatnot
             fout.write(line)

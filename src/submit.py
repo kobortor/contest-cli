@@ -3,7 +3,7 @@ from utils import Settings
 
 def handle_submit(args: List[str]):
     if len(args) == 0:
-        settings = Settings.get_default()
+        settings = Settings.get_saved()
     elif len(args) == 1:
         pass
     elif len(args) == 2:

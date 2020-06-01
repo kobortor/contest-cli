@@ -1,6 +1,6 @@
 import os
 from typing import *
-from utils import get_login_url, get_session, delete_session, save_session
+from utils import get_login_url, get_session, delete_session, save_session, Language, Settings
 from getpass import getpass
 import cfscrape
 import pickle
@@ -101,6 +101,35 @@ def _handle_logout(args: List[str]):
     else:
         print("Not deleting!")
 
+def _handle_template(args: List[str]):
+    if len(args) == 2 and args[0] == "set":
+        language_name = args[1]
+        language = Language.get_by_name(language_name)
+        if language is None:
+            print("Language not found")
+
+        template_filename = input("Please enter the path to your template: ").strip()
+        if not os.path.isfile(template_filename):
+            response = ""
+            while not response:
+                response = input("This does not seem to be a normal file. Do you wish to continue? [yn]: ").strip().lower()
+                if response == "n":
+                    return
+                elif response != "y":
+                    response = ""
+
+        settings = Settings.get_saved()
+        settings.language = language
+        settings.template_filename = template_filename
+        settings.save()
+    else:
+        print("Usage: dmoj config template set {LANGUAGE}")
+        print("The list of choices are:")
+        for lang in Language.get_all():
+            print("\t{}".format(lang.name))
+        print("")
+        print("They can be found in ~/.contest-cli/dmoj/languages.json")
+
 def handle_config(args: List[str]):
     if not args:
         handle_help(args)
@@ -110,5 +139,7 @@ def handle_config(args: List[str]):
         _handle_login(args[1:])
     elif args[0] == "logout":
         _handle_logout(args[1:])
+    elif args[0] == "template":
+        _handle_template(args[1:])
     else:
         print("Unknown config `{}`".format(args[0]))
