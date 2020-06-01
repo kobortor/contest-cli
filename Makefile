@@ -1,5 +1,4 @@
 python_files = src/__main__.py src/help.py src/config.py src/submit.py src/make.py src/utils.py
-default_files = defaults/patterns.json defaults/settings.json defaults/languages.json
 
 dmoj: $(python_files)
 	@tmp=$$(mktemp); \
@@ -8,9 +7,15 @@ dmoj: $(python_files)
 	chmod a+x dmoj; \
 	rm "$$tmp" "$$tmp.zip"
 
+# Install everything, do not overwrite data
 .PHONY: install
 install: dmoj
-	@bash scripts/install.sh $(default_files)
+	@bash scripts/install.sh
+
+# Install everything, overwrite userdata
+.PHONY: hard-install
+hard-install: dmoj
+	@bash scripts/hard-install.sh
 
 # Deletes just the program
 .PHONY: uninstall
