@@ -12,6 +12,12 @@ dmoj: $(python_files)
 install: dmoj
 	@bash scripts/install.sh $(default_files)
 
+# Deletes just the program
 .PHONY: uninstall
 uninstall:
-	@bash scripts/uninstall.sh $(default_files)
+	@bash scripts/uninstall.sh
+
+# Deletes the user data too
+.PHONY: hard-uninstall
+hard-uninstall:
+	@bash scripts/hard-uninstall.sh
