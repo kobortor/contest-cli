@@ -64,11 +64,15 @@ def handle_make(args: List[str]):
     for child in content.children:
         if child.name == "h4":
             text = child.text.strip()
-            if text.startswith("Sample Input "):
-                idx = text[13:]
+            if text.startswith("Sample Input"):
+                idx = text[13:].strip()
+                if not idx:
+                    idx = "unnamed"
                 ext = "in"
-            elif text.startswith("Sample Output "):
-                idx = text[14:]
+            elif text.startswith("Sample Output"):
+                idx = text[14:].strip()
+                if not idx:
+                    idx = "unnamed"
                 ext = "out"
         elif child.name == "pre" and idx and ext:
             dct["{}.{}".format(idx, ext)] = child.find("code").text.strip()
