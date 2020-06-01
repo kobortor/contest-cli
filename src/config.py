@@ -64,10 +64,10 @@ def _handle_login(args: List[str]):
         code_2fa = ""
         while not code_2fa:
             code_2fa = input("Enter your 2FA code: ").strip().lower()
-            if len(code_2fa) == 6 and code_2fa.isdigit():
+            if code_2fa and code_2fa.isdigit():
                 pass
             else:
-                print("The 2FA code should be 6-digits. To quit, press Ctrl-D")
+                print("The 2FA code is normally 6 to 10 digits. To quit, press Ctrl-D")
                 code_2fa = ""
 
         r3 = s.post(
