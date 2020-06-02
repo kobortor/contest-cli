@@ -1,6 +1,7 @@
 {
     "CPP17": {
         "compile_fmt_str": "g++ -std=c++17 \"${SOURCE}\" -o \"${OUTPUT}\"",
+        "is_compiled": true,
         "run_fmt_str": "./\"${OUTPUT}\"",
         "suffix": "cpp"
     }

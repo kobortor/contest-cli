@@ -5,11 +5,13 @@ import pickle
 
 
 class Language:
-    def __init__(self, name, compile_fmt_str, run_fmt_str, suffix):
+    def __init__(self, name, is_compiled, compile_fmt_str, run_fmt_str, suffix, outfile):
         self.name = name
+        self.is_compiled = is_compiled
         self.compile_fmt_str = compile_fmt_str
         self.run_fmt_str = run_fmt_str
         self.suffix = suffix
+        self.outfile = outfile
 
     @staticmethod
     def get_by_name(name):
@@ -17,7 +19,13 @@ class Language:
         if os.path.exists(languages_filename):
             data = json.load(open(languages_filename, "r"))
             if name in data:
-                return Language(name, data[name]["compile_fmt_str"], data[name]["run_fmt_str"], data[name]["suffix"])
+                return Language(
+                        name, 
+                        data[name]["is_compiled"],
+                        data[name].get("compile_fmt_str", ""), 
+                        data[name]["run_fmt_str"], 
+                        data[name]["suffix"],
+                        data[name].get("outfile", ""))
 
         return None
 
@@ -41,6 +49,7 @@ class Settings:
             self.language = None
 
         self.template_filename = dct.get("template_filename", None)
+        self.working_file = dct.get("working_file", None)
 
     @staticmethod
     def get_saved():

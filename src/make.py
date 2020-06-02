@@ -96,11 +96,14 @@ def handle_make(args: List[str]):
 
     regex_matcher = get_regex_matcher()
     output_base_filename = regex_matcher(problem_id)
-    output_suffix_filename = output_base_filename + "." + settings.language.suffix
+    output_full_filename = os.path.join(os.getcwd(), output_base_filename + "." + settings.language.suffix)
 
-    os.makedirs(os.path.dirname(output_suffix_filename), exist_ok=True)
+    os.makedirs(os.path.dirname(output_full_filename), exist_ok=True)
+
+    settings.working_file = output_full_filename
+    settings.save()
     
-    with open(settings.template_filename, "r") as fin, open(output_suffix_filename, "w") as fout:
+    with open(settings.template_filename, "r") as fin, open(output_full_filename, "w") as fout:
         for line in fin:
             # TODO: replace things like ${username} and whatnot
             fout.write(line)
