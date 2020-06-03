@@ -27,7 +27,7 @@ def _handle_login(args: List[str]):
     r1 = s.get(get_login_url())
 
     if r1.status_code != 200:
-        print("Cannot connect to dmoj.ca: error code [{}]".format(r.status_code))
+        print("Cannot connect to dmoj.ca: error code [{}]".format(r1.status_code))
         return
 
     if "csrftoken" not in r1.cookies:
@@ -52,7 +52,7 @@ def _handle_login(args: List[str]):
             headers={"referer": r1.url})
 
     if r2.status_code != 200:
-        print("Cannot connect to dmoj.ca: error code [{}]".format(r.status_code))
+        print("Cannot connect to dmoj.ca: error code [{}]".format(r1.status_code))
         return
 
     if '<p class="error">Invalid username or password.</p>' in r2.text:
