@@ -7,6 +7,8 @@ from config import handle_config
 from make import handle_make
 from submit import handle_submit
 from build import handle_build
+from test import handle_test
+
 
 def main():
     if len(sys.argv) == 1:
@@ -26,8 +28,11 @@ def main():
         handle_help(remaining_args)
     elif first_arg == "build":
         handle_build(remaining_args)
+    elif first_arg == "test":
+        handle_test(remaining_args)
     else:
         print("Argument {} not understood".format(sys.argv[1]))
+
 
 if __name__ == "__main__":
     main()

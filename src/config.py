@@ -3,9 +3,8 @@ from typing import *
 from utils import get_login_url, get_session, delete_session, save_session, Language, Settings
 from getpass import getpass
 import cfscrape
-import pickle
 from help import handle_help
-from urllib.parse import urlparse
+
 
 def _handle_login(args: List[str]):
     if args:
@@ -50,7 +49,7 @@ def _handle_login(args: List[str]):
     r2 = s.post(
             r1.url, 
             data={"username": username, "password": password, "csrfmiddlewaretoken": r1.cookies["csrftoken"]},
-            headers={"referer":r1.url})
+            headers={"referer": r1.url})
 
     if r2.status_code != 200:
         print("Cannot connect to dmoj.ca: error code [{}]".format(r.status_code))
@@ -119,14 +118,14 @@ def _handle_template(args: List[str]):
                     response = ""
 
         settings = Settings.get_saved()
-        settings.language = language
-        settings.template_filename = template_filename
+        settings.set_language(language, template_filename)
         settings.save()
     else:
         print("Usage: dmoj config template set {LANGUAGE}")
         print("The list of choices are:")
         for lang in Language.get_all():
             print("\t{}".format(lang.name))
+
         print("")
         print("They can be found in ~/.contest-cli/dmoj/languages.json")
 

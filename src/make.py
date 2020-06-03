@@ -1,12 +1,11 @@
 from typing import *
-from utils import get_session, get_problem_url, get_problem_api_url, Settings, get_regex_matcher
+from utils import get_session, get_problem_url, get_problem_api_url, Settings
 from bs4 import BeautifulSoup
-from pathlib import Path
-import pickle
 import json
 import os
 
-def handle_make(args: List[str]):
+
+def handle_make(args: List[str]) -> None:
     settings = Settings.get_saved()
 
     cur_dir_name = os.path.basename(os.getcwd())
@@ -94,13 +93,13 @@ def handle_make(args: List[str]):
             "samples": list(k[:-3] for k in dct.keys() if k.endswith(".in") and k[:-3] + ".out" in dct)
             }))
 
-    regex_matcher = get_regex_matcher()
+    regex_matcher = RegExMatcher.get_default()
     output_base_filename = regex_matcher(problem_id)
     output_full_filename = os.path.join(os.getcwd(), output_base_filename + "." + settings.language.suffix)
 
     os.makedirs(os.path.dirname(output_full_filename), exist_ok=True)
 
-    settings.working_file = output_full_filename
+    settings.set_problem(problem_id, working_file)
     settings.save()
     
     with open(settings.template_filename, "r") as fin, open(output_full_filename, "w") as fout:

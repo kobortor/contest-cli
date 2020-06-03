@@ -1,5 +1,8 @@
+#!/usr/bin/env python3
+
 from typing import *
 from utils import Settings
+
 
 def handle_submit(args: List[str]):
     if len(args) == 0:
