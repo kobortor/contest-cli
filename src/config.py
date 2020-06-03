@@ -72,7 +72,7 @@ def _handle_login(args: List[str]):
         r3 = s.post(
                 r2.url,
                 data={"totp_token": code_2fa, "csrfmiddlewaretoken": r2.cookies["csrftoken"]},
-                headers={"referer":r2.url})
+                headers={"referer": r2.url})
         if r3.status_code != 200:
             print("Error: Status Code {}".format(r3.status_code))
             return
@@ -83,6 +83,7 @@ def _handle_login(args: List[str]):
     print("Login Successful!")
     s.cookies["dmoj-cli-username"] = username
     save_session(s)
+
 
 def _handle_logout(args: List[str]):
     if args:
@@ -100,10 +101,11 @@ def _handle_logout(args: List[str]):
     else:
         print("Not deleting!")
 
+
 def _handle_template(args: List[str]):
     if len(args) == 2 and args[0] == "set":
-        language_name = args[1]
-        language = Language.get_by_name(language_name)
+        language_code = args[1]
+        language = Language.get_by_name(language_code)
         if language is None:
             print("Language not found")
 
@@ -124,10 +126,11 @@ def _handle_template(args: List[str]):
         print("Usage: dmoj config template set {LANGUAGE}")
         print("The list of choices are:")
         for lang in Language.get_all():
-            print("\t{}".format(lang.name))
+            print("\t{}".format(lang))
 
         print("")
         print("They can be found in ~/.contest-cli/dmoj/languages.json")
+
 
 def handle_config(args: List[str]):
     if not args:

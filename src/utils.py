@@ -7,27 +7,30 @@ from cfscrape import CloudflareScraper
 
 
 class Language:
-    def __init__(self, name: str, is_compiled: bool, compile_fmt_str: str, run_fmt_str: str, suffix: str, outfile: str):
-        self.name = name
+    def __init__(self, code: str, is_compiled: bool, compile_fmt_str: str, run_fmt_str: str, suffix: str, outfile: str,
+                 name: str):
+        self.code = code
         self.is_compiled = is_compiled
         self.compile_fmt_str = compile_fmt_str
         self.run_fmt_str = run_fmt_str
         self.suffix = suffix
         self.outfile = outfile
+        self.name = name
 
     @staticmethod
-    def get_by_name(name: str) -> "Language":
+    def get_by_name(code: str) -> Optional["Language"]:
         languages_filename = os.path.expanduser("~/.contest-cli/dmoj/languages.json")
         if os.path.exists(languages_filename):
             data = json.load(open(languages_filename, "r"))
-            if name in data:
+            if code in data:
                 return Language(
-                        name, 
-                        data[name]["is_compiled"],
-                        data[name].get("compile_fmt_str", ""), 
-                        data[name]["run_fmt_str"], 
-                        data[name]["suffix"],
-                        data[name].get("outfile", ""))
+                        code,
+                        data[code]["is_compiled"],
+                        data[code].get("compile_fmt_str", ""),
+                        data[code]["run_fmt_str"],
+                        data[code]["suffix"],
+                        data[code].get("outfile", ""),
+                        data[code]["name"])
 
         return None
 
@@ -78,6 +81,12 @@ class Settings:
 
         if self.template_filename is not None:
             dct["template_filename"] = self.template_filename
+
+        if self.working_file is not None:
+            dct["working_file"] = self.working_file
+
+        if self.problem_id is not None:
+            dct["problem_id"] = self.problem_id
 
         if self.last_build_time is not None:
             dct["last_build_time"] = self.last_build_time
@@ -132,12 +141,24 @@ def get_login_url() -> str:
     return "https://dmoj.ca/accounts/login/"
 
 
-def get_problem_url(problem: str) -> str:
-    return "https://dmoj.ca/problem/{}".format(problem)
+def get_problem_url(problem_id: str) -> str:
+    return "https://dmoj.ca/problem/{}".format(problem_id)
 
 
-def get_problem_api_url(problem: str) -> str:
-    return "https://dmoj.ca/api/problem/info/{}".format(problem)
+def get_problem_submit_url(problem_id: str) -> str:
+    return "https://dmoj.ca/problem/{}/submit".format(problem_id)
+
+
+def get_problem_api_url(problem_id: str) -> str:
+    return "https://dmoj.ca/api/problem/info/{}".format(problem_id)
+
+
+def get_submission_url(submission_id: str) -> str:
+    return "https://dmoj.ca/submission/{}".format(submission_id)
+
+
+def get_submission_update_url(submission_id: str) -> str:
+    return "https://dmoj.ca/widgets/submission_testcases?id={}".format(submission_id)
 
 
 def get_session() -> Optional[CloudflareScraper]:

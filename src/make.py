@@ -1,5 +1,5 @@
 from typing import *
-from utils import get_session, get_problem_url, get_problem_api_url, Settings
+from utils import get_session, get_problem_url, get_problem_api_url, Settings, RegExMatcher
 from bs4 import BeautifulSoup
 import json
 import os
@@ -74,7 +74,9 @@ def handle_make(args: List[str]) -> None:
                     idx = "unnamed"
                 ext = "out"
         elif child.name == "pre" and idx and ext:
-            dct["{}.{}".format(idx, ext)] = child.find("code").text.strip()
+            if "{}.{}".format(idx, ext) not in dct:
+                code = child.find("code")
+                dct["{}.{}".format(idx, ext)] = code.text.strip()
 
     problem_name = api_data["name"]
     languages = api_data["languages"]
@@ -99,7 +101,7 @@ def handle_make(args: List[str]) -> None:
 
     os.makedirs(os.path.dirname(output_full_filename), exist_ok=True)
 
-    settings.set_problem(problem_id, working_file)
+    settings.set_problem(problem_id, output_full_filename)
     settings.save()
     
     with open(settings.template_filename, "r") as fin, open(output_full_filename, "w") as fout:

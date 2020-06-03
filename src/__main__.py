@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import sys
-from typing import *
 from help import handle_help
 from config import handle_config
 from make import handle_make
