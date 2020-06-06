@@ -29,7 +29,7 @@ def handle_make(args: List[str]) -> None:
 
     problem_id = args[0]
 
-    if settings.template_filename is None or settings.language is None:
+    if not settings.has_language():
         print("You don't seem to have a template. Please set one up using `dmoj config template`")
         return
 
@@ -81,8 +81,8 @@ def handle_make(args: List[str]) -> None:
     problem_name = api_data["name"]
     languages = api_data["languages"]
 
-    if settings.language.name not in languages:
-        print("Your language ({}) is not supported. Please change to one from {} before submitting.".format(settings.language.name, languages))
+    if settings.language.code not in languages:
+        print("Your language ({}) is not supported. Please change to one from {} before submitting.".format(settings.language.code, languages))
 
     os.makedirs(settings.sample_data_folder, exist_ok=True)
     for (k, v) in dct.items():

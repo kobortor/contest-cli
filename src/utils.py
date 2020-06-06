@@ -77,7 +77,7 @@ class Settings:
             }
 
         if self.language is not None:
-            dct["language"] = self.language.name
+            dct["language"] = self.language.code
 
         if self.template_filename is not None:
             dct["template_filename"] = self.template_filename
