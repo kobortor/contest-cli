@@ -105,7 +105,7 @@ def _handle_logout(args: List[str]):
 def _handle_template(args: List[str]):
     if len(args) == 2 and args[0] == "set":
         language_code = args[1]
-        language = Language.get_by_name(language_code)
+        language = Language.get_by_code(language_code)
         if language is None:
             print("Language not found")
 
