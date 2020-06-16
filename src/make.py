@@ -89,11 +89,13 @@ def handle_make(args: List[str]) -> None:
         with open(os.path.join(settings.sample_data_folder, k), "w") as f:
             f.write(v)
 
-    with open(os.path.join(settings.sample_data_folder, "problem_attrs.json"), "w") as f:
-        f.write(json.dumps({
+    json.dump(
+        {
             "languages": languages,
             "samples": list(k[:-3] for k in dct.keys() if k.endswith(".in") and k[:-3] + ".out" in dct)
-            }))
+        },
+        open(os.path.join(settings.sample_data_folder, "problem_attrs.json"), "w"),
+        sort_keys=True, indent=4)
 
     regex_matcher = RegExMatcher.get_default()
     output_base_filename = regex_matcher(problem_id)

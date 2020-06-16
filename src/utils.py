@@ -91,8 +91,7 @@ class Settings:
         if self.last_build_time is not None:
             dct["last_build_time"] = self.last_build_time
 
-        with open(setting_filename, "w") as f:
-            f.write(json.dumps(dct, sort_keys=True, indent=4))
+        json.dump(dct, open(setting_filename, "w"), sort_keys=True, indent=4)
 
     def has_language(self) -> bool:
         return self.language and self.template_filename
