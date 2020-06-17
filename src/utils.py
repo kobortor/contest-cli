@@ -19,6 +19,9 @@ class Language:
 
     @staticmethod
     def get_by_code(code: str) -> Optional["Language"]:
+        if code is None:
+            return None
+
         languages_filename = os.path.expanduser("~/.contest-cli/dmoj/languages.json")
         if os.path.exists(languages_filename):
             data = json.load(open(languages_filename, "r"))
@@ -46,12 +49,11 @@ class Language:
 class Settings:
     def __init__(self, dct: Dict[str, str]):
         self.sample_data_folder = dct.get("sample_data_folder", "data")
+        self.sample_problem_attribute_filename = dct.get("sample_problem_attribute_filename", "problem_attrs.json")
+
         self.allowed_paths = dct.get("allowed_paths", [])
 
-        if "language_code" in dct:
-            self.language = Language.get_by_code(dct["language_code"])
-        else:
-            self.language = None
+        self.language = Language.get_by_code(dct.get("language_code", None))
 
         self.template_filename = dct.get("template_filename", None)
 
